@@ -1,0 +1,33 @@
+{
+    "name": "securelog_rsc",
+    "version": "1.0.3",
+    "description": "Secure Log React Server Component for Scanning secrets.",
+    "main": "dist/secure-log-container.umd.js",       
+    "module": "dist/secure-log-container.es.js",      
+    "types": "dist/index.d.ts",                      
+    "scripts": {
+      "build": "vite build",                        
+      "prepublishOnly": "npm run build"               
+    },
+    "files": [
+      "dist"                                          
+    ],
+    "peerDependencies": {
+      "react": "^17.0.0 || ^18.0.0",                  
+      "react-dom": "^17.0.0 || ^18.0.0"
+    },
+    "devDependencies": {
+      "vite": "^4.0.0",                               
+      "@vitejs/plugin-react": "^2.0.0",               
+      "typescript": "^4.0.0",                         
+      "@types/react": "^17.0.0",   
+      "@types/react-dom": "^17.0.0"
+    },
+    "keywords": [
+      "react",
+      "secret-detection",
+      "securelog"
+    ],
+    "author": "Onboardbase"
+  }
+  

@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ES2020",
+    "jsx": "react", // Enable React JSX
+    "declaration": true, // Generate type declaration files
+    "declarationDir": "dist", // Output type declaration files in dist
+    "outDir": "dist", // Output compiled files in dist
+    "moduleResolution": "node", // Use node module resolution
+    "esModuleInterop": true, // Enable interoperability between CommonJS and ES modules
+    "skipLibCheck": true, // Skip type checking of declaration files
+    "strict": true // Enable strict type checking
+  },
+  "include": ["src/**/*"], // Include all TypeScript files in the src directory
+  "exclude": ["node_modules", "dist"] // Exclude node_modules and dist directory
+}
