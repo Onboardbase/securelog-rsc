@@ -75,6 +75,7 @@ const SecureLogContainer: FC<SecureLogContainerProps> = ({
 
       if (secrets.length > 0) {
         secrets.forEach((secret: SecretInspectorResult) => {
+          const originalSecret = secret.rawValue;
           let maskedSecret = secret.rawValue;
           if (mask) {
             // Mask the secret and update the DOM if available
@@ -87,7 +88,7 @@ const SecureLogContainer: FC<SecureLogContainerProps> = ({
               domNode.textContent
             ) {
               domNode.textContent = domNode.textContent.replace(
-                secret.rawValue,
+                originalSecret,
                 maskedSecret
               );
             }
@@ -136,10 +137,18 @@ const SecureLogContainer: FC<SecureLogContainerProps> = ({
 
             if (secrets.length > 0) {
               secrets.forEach((secret: SecretInspectorResult) => {
+                const originalSecret = secret.rawValue;
                 let maskedSecret = secret.rawValue;
                 if (mask) {
                   maskedSecret = maskString(secret.rawValue);
                   secret.rawValue = maskedSecret;
+
+                  if (domNode && domNode.textContent) {
+                    domNode.textContent = domNode.textContent.replace(
+                      originalSecret,
+                      maskedSecret
+                    );
+                  }
                 }
                 foundSecrets.push(secret);
               });
