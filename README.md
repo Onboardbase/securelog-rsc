@@ -1,4 +1,4 @@
-# SecureLog React Server Component
+# Securelog React Server Component
 
 SecureLog RSC is a React component designed to detect and mask sensitive information (secrets) in your application. It leverages a worker-based approach to scan text nodes and component props for patterns already supported by the Securelog Scan CLI, It also allows for custom secret patterns and also provides the option to mask detected secrets both in the DOM and in the results. 
 
