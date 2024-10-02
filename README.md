@@ -19,7 +19,7 @@ yarn add securelog-rsc  # npm i securelog-rsc
 
 ## Usage
 
-### Basic Usage
+### Basic usage
 
 Wrap your application or part of your component tree with the \`SecureLogContainer\` to inspect its children for secrets:
 
@@ -68,7 +68,7 @@ const WrappedComponent = useSecureLog(
 export default WrappedComponent;
 ```
 
-### Custom Patterns
+### Custom patterns
 
 You can pass custom secret patterns to scan for, in addition to the default ones.
 
@@ -89,7 +89,7 @@ const customPatterns = [
 </SecureLog>;
 ```
 
-### Secret Masking
+### Secret masking
 
 You can enable masking to replace detected secrets with asterisks. This will both mask the secret in the \`onSecretFound\` callback and in the DOM.
 
@@ -102,7 +102,7 @@ You can enable masking to replace detected secrets with asterisks. This will bot
 </SecureLog>
 ```
 
-### Exclude Components
+### Exclude components
 
 You can exclude certain components from the inspection process by passing an array of component types to the \`excludeComponents\` prop.
 
