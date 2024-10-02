@@ -14,13 +14,7 @@ SecureLog RSC is a React component designed to detect and mask sensitive informa
 ## Installation
 
 ```bash
-npm install securelog-rsc
-```
-
-or
-
-```bash
-yarn add securelog-rsc
+yarn add securelog-rsc  # npm i securelog-rsc
 ```
 
 ## Usage
