@@ -25,7 +25,7 @@ yarn add securelog-rsc  # npm i securelog-rsc
 
 ### Basic usage
 
-Wrap your application or part of your component tree with SecureLog to inspect its children for secrets:
+Wrap your application or part of your component tree with `SecureLog` to inspect its children for secrets:
 
 ```tsx
 import React from "react";
@@ -46,7 +46,7 @@ export default App;
 
 ### SecureLog RSC also suports React HOC (useSecurelog)
 
-`useSecureLog` is a Higher-Order Component (HOC) that wraps the SecureLog component and provides secret inspection to any component without requiring the use of `SecureLog` directly.
+`useSecureLog` is a Higher-Order Component (HOC) that wraps the `SecureLog` component and provides secret inspection to any component without requiring the use of `SecureLog` directly.
 
 ```tsx
 import React from "react";
