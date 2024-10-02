@@ -1,35 +1,38 @@
 {
-    "name": "securelog-rsc",
-    "version": "1.0.0",
-    "description": "Secure Log React Server Component for Scanning secrets.",
-    "main": "dist/secure-log-container.umd.js",
-    "module": "dist/secure-log-container.es.js",
-    "types": "dist/index.d.ts",
-    "scripts": {
-        "build": "vite build",
-        "prepublishOnly": "npm run build"
-    },
-    "files": [
-        "dist"
-    ],
-    "peerDependencies": {
-        "react": "^17.0.0 || ^18.0.0",
-        "react-dom": "^17.0.0 || ^18.0.0"
-    },
-    "devDependencies": {
-        "@types/react": "^17.0.0",
-        "@types/react-dom": "^17.0.0",
-        "@vitejs/plugin-react": "^2.0.0",
-        "typescript": "^4.0.0",
-        "vite": "^4.0.0"
-    },
-    "keywords": [
-        "react",
-        "secret-detection",
-        "securelog"
-    ],
-    "author": "Onboardbase",
-    "dependencies": {
-        "securelog-detectors": "^1.0.0"
-    }
+  "name": "securelog-rsc",
+  "version": "1.0.0",
+  "description": "Secure Log React Server Component for Scanning secrets.",
+  "main": "dist/secure-log-container.umd.js",
+  "module": "dist/secure-log-container.es.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "vite build",
+    "prepublishOnly": "npm run build"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": "https://github.com/Onboardbase/securelog-rsc",
+  "bugs": "https://github.com/Onboardbase/securelog-rsc/issues",
+  "homepage": "https://thesecurelog.com",
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@vitejs/plugin-react": "^2.0.0",
+    "typescript": "^4.0.0",
+    "vite": "^4.0.0"
+  },
+  "keywords": [
+    "react",
+    "secret-detection",
+    "securelog"
+  ],
+  "author": "Onboardbase",
+  "dependencies": {
+    "securelog-detectors": "^1.0.0"
+  }
 }
