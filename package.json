@@ -1,6 +1,6 @@
 {
-    "name": "securelog_rsc",
-    "version": "1.0.3",
+    "name": "securelog-rsc",
+    "version": "1.0.0",
     "description": "Secure Log React Server Component for Scanning secrets.",
     "main": "dist/secure-log-container.umd.js",       
     "module": "dist/secure-log-container.es.js",      

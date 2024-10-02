@@ -2,18 +2,21 @@ onmessage = function (e) {
   const { text, secretPatterns, componentName } = e.data;
 
   let secretsFound = [];
-
-  console.log("Securelog RSC scanning...");
-
   for (const pattern of secretPatterns) {
     const matches = [...text.matchAll(new RegExp(pattern.regex, "gi"))];
 
     for (const match of matches) {
       const rawValue = match[pattern.secretPosition].trim();
 
+      if (
+        pattern.falsePositive &&
+        rawValue.match(new RegExp(pattern.falsePositive, "gi"))
+      )
+        continue;
+
       secretsFound.push({
         rawValue,
-        line: getLineNumber(text, match.index),
+        // line: getLineNumber(text, match.index),
         detector: pattern.detector,
         componentName,
       });

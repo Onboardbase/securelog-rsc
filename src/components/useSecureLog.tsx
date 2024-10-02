@@ -11,6 +11,7 @@ import { SecretPattern, SecretInspectorResult } from "../types";
  * @param customPatterns Optional custom regex patterns for secret detection.
  * @param excludeComponents Optional array of component names to exclude from secret scanning.
  * @param maxDepth Optional maximum depth for recursive scanning of child components.
+ * @param mask optional prop to choose if secret should be masked or not.
  */
 export const useSecureLog = (
   Component: FC<any>,
@@ -25,7 +26,7 @@ export const useSecureLog = (
       customPatterns={customPatterns}
       excludeComponents={excludeComponents}
       maxDepth={maxDepth}
-      onSecretFound={(secret: SecretInspectorResult) => cb?.(secret)}
+      onSecretFound={(result: SecretInspectorResult[]) => cb?.(result)}
       mask={mask}
     >
       <Component {...props} />

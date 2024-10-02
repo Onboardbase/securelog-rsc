@@ -4,6 +4,7 @@ export interface SecretPattern {
   detector: string;
   regex: string; // Regex as a string because Web Workers can't transfer RegExp objects
   secretPosition: number;
+  falsePositive?: string;
 }
 
 export interface SecretInspectorResult {
@@ -19,5 +20,5 @@ export interface SecureLogContainerProps {
   excludeComponents?: string[];
   maxDepth?: number;
   mask?: boolean;
-  onSecretFound?: (result: SecretInspectorResult) => void;
+  onSecretFound?: (records: SecretInspectorResult[]) => void;
 }

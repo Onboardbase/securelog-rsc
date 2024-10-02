@@ -1,15 +1,25 @@
-import React, { ReactNode, FC, useCallback, useMemo, useEffect } from 'react';
-import { useWorker } from '../hooks/useWorker';
-import { SecretInspectorResult, SecretPattern, SecureLogContainerProps } from '../types';
+import React, {
+  ReactNode,
+  FC,
+  useCallback,
+  useMemo,
+  useEffect,
+  useRef,
+} from "react";
+import { useWorker } from "../hooks/useWorker";
+import {
+  SecretInspectorResult,
+  SecretPattern,
+  SecureLogContainerProps,
+} from "../types";
+import { secureLogDetectors } from "securelog-detectors";
 
-const defaultSecretPatterns: SecretPattern[] = [
-  { detector: 'Paystack', regex: "\\bsk\\_[a-z]{1,}\\_[A-Za-z0-9]{40}\\b", secretPosition: 0 },
-];
+const defaultSecretPatterns: SecretPattern[] = secureLogDetectors;
 
 /**
- * 
+ *
  * mask secret
- * 
+ *
  * gotten from https://github.com/Onboardbase/securelog-scan/blob/main/src/util.ts#L70
  */
 const maskString = (str: string, visibleChars: number = 5): string => {
@@ -37,135 +47,179 @@ const SecureLogContainer: FC<SecureLogContainerProps> = ({
   customPatterns = [],
   excludeComponents = [],
   maxDepth = 10,
-  onSecretFound = (record: SecretInspectorResult) => {},
-  mask = false,  // Added mask option here
+  onSecretFound = (records: SecretInspectorResult[]) => {},
+  mask = false,
 }) => {
-  const secretPatterns = useMemo(() => [...defaultSecretPatterns, ...customPatterns], [customPatterns]);
+  const containerRef = useRef<HTMLDivElement>(null); // Create a ref for the container
 
-  const { runWorker } = useWorker(new URL('../workers/secureLogWorker.js', import.meta.url));
+  const secretPatterns = useMemo(
+    () => [...defaultSecretPatterns, ...customPatterns],
+    [customPatterns]
+  );
 
-  // inspect a text node and manipulate the DOM
-  const inspectTextNode = useCallback(async (text: string, domNode: Node): Promise<boolean> => {
-    const foundSecrets = await runWorker({
-      text,
-      secretPatterns,
-      componentName: 'TextNode', // Text nodes don't have a specific component name
-    });
+  const { runWorker } = useWorker(
+    new URL("../workers/secureLogWorker.js", import.meta.url)
+  );
 
-    if (foundSecrets.length > 0) {
-      foundSecrets.forEach((secret: SecretInspectorResult) => {
-        let maskedSecret = secret.rawValue;
-        if (mask) {
-          // Mask the secret in both the secret object and the DOM
-          maskedSecret = maskString(secret.rawValue);
-          secret.rawValue = maskedSecret; 
-
-          if (domNode) {
-            domNode.textContent = domNode.textContent?.replace(secret.rawValue, maskedSecret) || '';
-          }
-        }
-        onSecretFound(secret);
+  const inspectTextNode = useCallback(
+    async (
+      text: string,
+      domNode: Node | null,
+      foundSecrets: SecretInspectorResult[]
+    ): Promise<boolean> => {
+      const secrets = await runWorker({
+        text,
+        secretPatterns,
+        componentName: "TextNode",
       });
-      return true;
-    }
 
-    return false;
-  }, [runWorker, secretPatterns, onSecretFound, mask]);
+      if (secrets.length > 0) {
+        secrets.forEach((secret: SecretInspectorResult) => {
+          let maskedSecret = secret.rawValue;
+          if (mask) {
+            // Mask the secret and update the DOM if available
+            maskedSecret = maskString(secret.rawValue);
+            secret.rawValue = maskedSecret;
 
-  // inspect nodes (both props and children) and manipulate the DOM
-  const inspectNode = useCallback(async (child: ReactNode, domNode: Node, depth: number = 0): Promise<boolean> => {
-    if (depth > maxDepth) return false;
-
-    // If the child is a text node, inspect it
-    if (typeof child === 'string') {
-      return await inspectTextNode(child, domNode);
-    }
-
-    // If it's a valid React element, inspect its props and children
-    if (React.isValidElement(child)) {
-      const { type, props } = child;
-      const componentName = getComponentName(type);
-
-      // Skip excluded components
-      if (typeof type === 'string' && excludeComponents.includes(type as never)) {
-        return false;
+            if (
+              domNode &&
+              domNode.nodeType === Node.TEXT_NODE &&
+              domNode.textContent
+            ) {
+              domNode.textContent = domNode.textContent.replace(
+                secret.rawValue,
+                maskedSecret
+              );
+            }
+          }
+          foundSecrets.push(secret);
+        });
+        return true;
       }
 
-      // Check props for secrets
-      for (const propKey in props) {
-        if (typeof props[propKey] === 'string') {
-          const foundSecrets = await runWorker({
-            text: props[propKey],
-            secretPatterns,
-            componentName,
-          });
+      return false;
+    },
+    [runWorker, secretPatterns, mask]
+  );
 
-          if (foundSecrets.length > 0) {
-            foundSecrets.forEach((secret: SecretInspectorResult) => {
-              let maskedSecret = secret.rawValue;
-              if (mask) {
-                // Mask the secret in both the prop and the DOM
-                maskedSecret = maskString(secret.rawValue);
-                secret.rawValue = maskedSecret;
+  const inspectNode = useCallback(
+    async (
+      child: ReactNode,
+      domNode: Node | null,
+      depth: number,
+      foundSecrets: SecretInspectorResult[]
+    ): Promise<boolean> => {
+      if (depth > maxDepth) return false;
 
-                // if secret is passed via a prop, dont mask as this might crash the app if secret is being used by a package
+      if (typeof child === "string") {
+        return await inspectTextNode(child, domNode, foundSecrets);
+      }
 
-                // if (domNode instanceof HTMLElement) {
-                //   domNode.setAttribute(propKey, props[propKey].replace(secret.rawValue, maskedSecret));
-                // }
-              }
-              onSecretFound({ ...secret, componentName });
+      if (React.isValidElement(child)) {
+        const { type, props } = child;
+        const componentName = getComponentName(type);
+
+        if (
+          typeof type === "string" &&
+          excludeComponents.includes(type as never)
+        ) {
+          return false;
+        }
+
+        for (const propKey in props) {
+          if (typeof props[propKey] === "string") {
+            const secrets = await runWorker({
+              text: props[propKey],
+              secretPatterns,
+              componentName,
             });
-            return true;
+
+            if (secrets.length > 0) {
+              secrets.forEach((secret: SecretInspectorResult) => {
+                let maskedSecret = secret.rawValue;
+                if (mask) {
+                  maskedSecret = maskString(secret.rawValue);
+                  secret.rawValue = maskedSecret;
+                }
+                foundSecrets.push(secret);
+              });
+              return true;
+            }
           }
+        }
+
+        if (props.children) {
+          return await inspectChildren(
+            props.children,
+            domNode,
+            depth + 1,
+            foundSecrets
+          );
         }
       }
 
-      // Recursively inspect children and manipulate DOM
-      if (props.children) {
-        return await inspectChildren(props.children, domNode, depth + 1);
+      return false;
+    },
+    [
+      maxDepth,
+      secretPatterns,
+      excludeComponents,
+      runWorker,
+      inspectTextNode,
+      mask,
+    ]
+  );
+
+  const inspectChildren = useCallback(
+    async (
+      children: ReactNode,
+      domNode: Node | null,
+      depth: number,
+      foundSecrets: SecretInspectorResult[]
+    ): Promise<boolean> => {
+      let foundSecret = false;
+      const childArray = React.Children.toArray(children);
+
+      for (const [index, child] of childArray.entries()) {
+        const childDomNode = domNode?.childNodes[index] || null;
+        if (await inspectNode(child, childDomNode, depth, foundSecrets)) {
+          foundSecret = true;
+        }
       }
-    }
 
-    return false;
-  }, [maxDepth, secretPatterns, excludeComponents, onSecretFound, runWorker, inspectTextNode, mask]);
+      return foundSecret;
+    },
+    [inspectNode]
+  );
 
-  const inspectChildren = useCallback(async (children: ReactNode, domNode: Node, depth: number): Promise<boolean> => {
-    let foundSecret = false;
-    const childArray = React.Children.toArray(children);
-
-    for (const [index, child] of childArray.entries()) {
-      const childDomNode = domNode.childNodes[index]; // Get corresponding DOM node
-      if (await inspectNode(child, childDomNode, depth)) {
-        foundSecret = true;
-      }
-    }
-
-    return foundSecret;
-  }, [inspectNode]);
-
-  // Check for secrets in the children and manipulate the DOM
+  // Collect secrets and trigger callback once for all secrets in the container
   useEffect(() => {
-    const containerNode = document.querySelector('#secure-log-container');
-    
+    const containerNode = containerRef.current;
+    const foundSecrets: SecretInspectorResult[] = [];
+
     const checkForSecrets = async () => {
       if (containerNode) {
-        await inspectChildren(children, containerNode, 0);
+        await inspectChildren(children, containerNode, 0, foundSecrets);
+        if (foundSecrets.length > 0) {
+          onSecretFound(foundSecrets);
+        }
       }
     };
 
     checkForSecrets();
-  }, [children, inspectChildren]);
+  }, [children, inspectChildren, onSecretFound]);
 
   return (
-    <div id="secure-log-container">
+    <div id="secure-log-container" ref={containerRef}>
       {children}
     </div>
   );
 };
 
 const getComponentName = (type: any): string => {
-  return typeof type === 'string' ? type : type.displayName || type.name || 'Unknown';
+  return typeof type === "string"
+    ? type
+    : type.displayName || type.name || "Unknown";
 };
 
 export default SecureLogContainer;
