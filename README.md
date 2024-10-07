@@ -35,7 +35,7 @@ const App = () => {
   return (
     <SecureLog onSecretFound={(secret) => console.log("Secret found:", secret)}>
       <div>
-        My Paystack key is sk_test_1234567890123456789012345678901234567890
+        My Stripe key is sk_test_********************************
       </div>
     </SecureLog>
   );
