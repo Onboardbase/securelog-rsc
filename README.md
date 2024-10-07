@@ -54,7 +54,7 @@ import { useSecureLog } from "securelog-rsc";
 
 const MyComponent = () => {
   return (
-    <div>My secret key is sk_test_1234567890123456789012345678901234567890</div>
+    <div>My secret key is sk_test_***********************</div>
   );
 };
 
@@ -89,7 +89,7 @@ const customPatterns = [
   customPatterns={customPatterns}
   onSecretFound={(secret) => console.log("Custom secret found:", secret)}
 >
-  <div>My custom key is ck_abc123def456ghi789jkl012mno345pqr</div>
+  <div>My custom key is ck_**************************</div>
 </SecureLog>;
 ```
 
@@ -102,7 +102,7 @@ You can enable masking to replace detected secrets with asterisks. This will bot
   mask={true}
   onSecretFound={(secret) => console.log("Masked secret found:", secret)}
 >
-  <div>My Paystack key is sk_test_1234567890123456789012345678901234567890</div>
+  <div>My Stripe key is sk_test_**************************</div>
 </SecureLog>
 ```
 
@@ -112,8 +112,8 @@ You can exclude certain components from the inspection process by passing an arr
 
 ```tsx
 <SecureLog excludeComponents={["input", "textarea"]}>
-  <div>My Paystack key is sk_test_1234567890123456789012345678901234567890</div>
-  <input value="sk_test_1234567890123456789012345678901234567890" />
+  <div>My Stripe key is sk_test_****************************</div>
+  <input value="sk_test_*******************************" />
 </SecureLog>
 ```
 
