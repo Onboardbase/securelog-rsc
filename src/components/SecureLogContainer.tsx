@@ -148,6 +148,9 @@ const SecureLogContainer: FC<SecureLogContainerProps> = ({
                       originalSecret,
                       maskedSecret
                     );
+
+                    // disable props
+                    // props[propKey] = undefined;
                   }
                 }
                 foundSecrets.push(secret);
@@ -215,7 +218,9 @@ const SecureLogContainer: FC<SecureLogContainerProps> = ({
       }
     };
 
-    checkForSecrets();
+    if (children) {
+      checkForSecrets();
+    }
   }, [children, inspectChildren, onSecretFound]);
 
   return (
