@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useEffect,
   useRef,
+  useState,
 } from "react";
 import { useWorker } from "../hooks/useWorker";
 import {
@@ -16,12 +17,6 @@ import { secureLogDetectors } from "securelog-detectors";
 
 const defaultSecretPatterns: SecretPattern[] = secureLogDetectors;
 
-/**
- *
- * mask secret
- *
- * gotten from https://github.com/Onboardbase/securelog-scan/blob/main/src/util.ts#L70
- */
 const maskString = (str: string, visibleChars: number = 5): string => {
   if (typeof str !== "string" || str.length === 0) {
     throw new Error("Invalid input: Input must be a non-empty string.");
@@ -32,7 +27,7 @@ const maskString = (str: string, visibleChars: number = 5): string => {
     );
   }
   if (visibleChars >= str.length) {
-    return str; // Return the full string if visibleChars is larger than the string length
+    return str;
   }
 
   const maskedPart = "*".repeat(
@@ -50,7 +45,7 @@ const SecureLogContainer: FC<SecureLogContainerProps> = ({
   onSecretFound = (records: SecretInspectorResult[]) => {},
   mask = false,
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null); // Create a ref for the container
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const secretPatterns = useMemo(
     () => [...defaultSecretPatterns, ...customPatterns],
@@ -78,7 +73,6 @@ const SecureLogContainer: FC<SecureLogContainerProps> = ({
           const originalSecret = secret.rawValue;
           let maskedSecret = secret.rawValue;
           if (mask) {
-            // Mask the secret and update the DOM if available
             maskedSecret = maskString(secret.rawValue);
             secret.rawValue = maskedSecret;
 
@@ -204,7 +198,6 @@ const SecureLogContainer: FC<SecureLogContainerProps> = ({
     [inspectNode]
   );
 
-  // Collect secrets and trigger callback once for all secrets in the container
   useEffect(() => {
     const containerNode = containerRef.current;
     const foundSecrets: SecretInspectorResult[] = [];
@@ -221,7 +214,7 @@ const SecureLogContainer: FC<SecureLogContainerProps> = ({
     if (children) {
       checkForSecrets();
     }
-  }, [children, inspectChildren, onSecretFound]);
+  }, []);
 
   return (
     <div id="secure-log-container" ref={containerRef}>
