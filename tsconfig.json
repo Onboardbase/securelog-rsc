@@ -4,7 +4,7 @@
     "module": "ES2020",
     "jsx": "react", // Enable React JSX
     "declaration": true, // Generate type declaration files
-    "declarationDir": "dist", // Output type declaration files in dist
+    "declarationDir": "./dist",
     "outDir": "dist", // Output compiled files in dist
     "moduleResolution": "node", // Use node module resolution
     "esModuleInterop": true, // Enable interoperability between CommonJS and ES modules
