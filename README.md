@@ -2,7 +2,9 @@
 
 SecureLog RSC is a React component designed to detect and mask sensitive information (secrets) in your application. It leverages a worker-based approach to scan text nodes and component props for patterns already supported by the [Securelog Scan CLI](https://github.com/Onboardbase/securelog-scan). It also allows for custom secret patterns and provides the option to mask detected secrets both in the DOM and in the results.
 
-Check out [Securelog for clean logs](https://github.com/Onboardbase/securelog) and [Securelog for scan](https://github.com/Onboardbase/securelog-scan)
+Need Secret scanning in other places?
+- [Securelog for your clean logs](https://github.com/Onboardbase/securelog)
+- [Securelog for your build and runtime logs](https://github.com/Onboardbase/securelog-scan)
 
 ## Features
 
@@ -41,7 +43,7 @@ const App = () => {
   return (
     <SecureLog onSecretFound={(secret) => console.log("Secret found:", secret)}>
       <div>
-        My Paystack key is sk_test_1234567890123456789012345678901234567890
+        My Stripe key is sk_test_********************************
       </div>
     </SecureLog>
   );
@@ -60,7 +62,7 @@ import { useSecureLog } from "securelog-rsc";
 
 const MyComponent = () => {
   return (
-    <div>My secret key is sk_test_1234567890123456789012345678901234567890</div>
+    <div>My secret key is sk_test_***********************</div>
   );
 };
 
@@ -95,7 +97,7 @@ const customPatterns = [
   customPatterns={customPatterns}
   onSecretFound={(secret) => console.log("Custom secret found:", secret)}
 >
-  <div>My custom key is ck_abc123def456ghi789jkl012mno345pqr</div>
+  <div>My custom key is ck_**************************</div>
 </SecureLog>;
 ```
 
@@ -108,7 +110,7 @@ You can enable masking to replace detected secrets with asterisks. This will bot
   mask={true}
   onSecretFound={(secret) => console.log("Masked secret found:", secret)}
 >
-  <div>My Paystack key is sk_test_1234567890123456789012345678901234567890</div>
+  <div>My Stripe key is sk_test_**************************</div>
 </SecureLog>
 ```
 
@@ -118,8 +120,8 @@ You can exclude certain components from the inspection process by passing an arr
 
 ```tsx
 <SecureLog excludeComponents={["input", "textarea"]}>
-  <div>My Paystack key is sk_test_1234567890123456789012345678901234567890</div>
-  <input value="sk_test_1234567890123456789012345678901234567890" />
+  <div>My Stripe key is sk_test_****************************</div>
+  <input value="sk_test_*******************************" />
 </SecureLog>
 ```
 
