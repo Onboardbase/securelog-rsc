@@ -10,6 +10,7 @@ jobs:
         with:
           node-version: "18"
       - run: yarn install
+      - run: yarn build
       - uses: JS-DevTools/npm-publish@v2
         with:
           token: ${{ secrets.NPM_TOKEN }}
