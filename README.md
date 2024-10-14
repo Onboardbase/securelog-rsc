@@ -17,7 +17,7 @@ Need Secret scanning in other places?
 
 ## Demo
 
-Check out the [live demo](#) to see the `SecureLog` react component in action.
+Check out the [live demo](https://example.securelog.com/) to see the `SecureLog` react component in action.
 
 ## Performance Considerations
 
