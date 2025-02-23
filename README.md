@@ -6,6 +6,8 @@ Need Secret scanning in other places?
 - [Securelog for your clean logs](https://github.com/Onboardbase/securelog)
 - [Securelog for your build and runtime logs](https://github.com/Onboardbase/securelog-scan)
 
+[Powered by Securelog](https://securelog.com)
+
 ## Features
 
 - **Secret Detection**: Scan text and props of React elements to detect sensitive information based on custom regex patterns.
